@@ -6,8 +6,8 @@ from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin
 from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory
-from api.forms import UserForm
-from api.models import User
+from api.forms import UserForm, LoginForm
+from api.models import User, Stocks, Favourites
 #Sample AJAX REQUEST
 
 @app.route('/api/hello', methods=['POST'])
@@ -19,8 +19,9 @@ def hello():
 
 @app.route('/api/login', methods=['GET', 'POST'])
 def login():
-	name = request.form['name']
-	password = request.form['password']
+	form = LoginForm()
+	name = form.username.data
+	password = form.password.data
 	user = User.query.filter_by(name=name).first()
 
 	s = 0
@@ -46,7 +47,7 @@ def signup():
 		s = s+a #sum of ASCIIs acts as the salt
 	hashed_password = (str)((hashlib.sha512((str(s).encode('utf-8'))+((pw).encode('utf-8')))).hexdigest())
 
-	user = User(name=form.name.data, password = hashed_password, about=form.about.data)
+	user = User(name=form.username.data, password = hashed_password)
 	db.session.add(user)
 	db.session.commit()
 	print (user)

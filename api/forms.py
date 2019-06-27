@@ -6,7 +6,11 @@ from api.models import User
 
 
 class UserForm(FlaskForm):
-	name = StringField('Name', validators = [DataRequired(), Length(max = 30)])
-	about = StringField('About', validators = [DataRequired(), Length(max = 120)])
+	username = StringField('Name', validators = [DataRequired(), Length(max = 30)])
 	password = PasswordField('Password', validators = [DataRequired()])
 	submit = SubmitField('Done')
+
+class LoginForm(FlaskForm):
+	username = StringField('Name', validators = [DataRequired(), Length(max = 30)])
+	password = PasswordField('Password', validators=[DataRequired()])
+	submit = SubmitField('Login')
