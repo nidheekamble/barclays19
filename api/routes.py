@@ -63,32 +63,42 @@ def webhook():
 
 	#req = json.loads(data)
 	req = data
-	if req['queryResult']['action'] == "reqSher":
-		print('sher action accessed')
-		response = sher(data)
+	if req['queryResult']['action'] == "showFavourites":
+		print('showFavourites identified')
+		response = showFavourites(data)
 		r = jsonify(response)
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
-	elif ['queryResult']['action']=='reqGhazal':
-		print('ghazal action accessed')
-		response = ghazal(data)
+	elif ['queryResult']['action']=='showGraph':
+		print('showGraph identified')
+		response = showGraph() # confirm redirection to site?
 		r = jsonify(response)
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
-def sher(data):
-	collection = [" 'aasmaan itni bulandi pe jo itraata hai, bhuul jaata hai zameen se hi nazar aata hai' - Waseem Barelvi",
-			" 'har shaḳhs dauDta hai yahaan bhiiD ki taraf, phir ye bhi chahta hai use rasta mile' - Waseem Barelvi",
-			" 'har-chand e'tibaar mein dhoke bhi hain magar, ye to nahin kisi pe bharosa kiya na jaa.e' - Jaan Nisar Akhtar ", 
-			" 'jhuuT vaale kahin se kahin baDh ga.e, aur main tha ki sach bolta reh gaya' - Waseem Barelvi",
-			" 'dosti aur kisi gharaz ke liye, vo tijaarat hai dosti hi nahin' - Ismail Merathi"]
-	selected = collection[random.randrange(0,5,1)]
-	print("\nSelected sher = "+selected)
+def showFavourites(data):
+@login_required
+	
+	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
+	favourites = []
+	for pair in userStockPair:
+		favourites.append(pair.stock_name)
 
-	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': [selected] }}]
-	print("Data in sher fulfillment : \n")
+	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
+	print("Fulfillment for showing favourites : \n")
 	for i in data:
 		print("", i, ":", data[i])
-	print('\ntext set for sher')
+	print('\nEOF\n')
 	return data
+
+def showGraph():
+@login_required
+	print('show graph here')
+	# add more here later
+	return ''
+
+def showNews():
+@login_required
+	print('retrieve news')
+	return ''

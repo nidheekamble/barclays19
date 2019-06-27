@@ -31,7 +31,7 @@ class Stocks(db.Model, UserMixin):
 class Favourites(db.Model, UserMixin):
 	__tablename__ = 'Favourites'
 	user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-	stock_id = db.Column(db.Integer, db.ForeignKey(Stocks.stockID))
+	stock_name = db.Column(db.String, db.ForeignKey(Stocks.stockName))
 
 	def __repr__(self):
 		return f"Favourites('{self.user_id}', '{self.stock_id}')"
