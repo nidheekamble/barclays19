@@ -1,0 +1,35 @@
+{
+  "name": "todos-front-end",
+  "version": "1.0.0",
+  "description": "Front End React App for Todos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --config webpack.config.js"
+  },
+  "keywords": [
+    "PWA"
+  ],
+  "author": "Ameya S. Daddikar",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.0.0",
+    "react-hot-loader": "^4.11.1",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
+  },
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.1",
+    "reactstrap": "^8.0.0"
+  }
+}
