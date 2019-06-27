@@ -14,7 +14,7 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
-import logo from './logo.png';
+import logo from './images/stocks_img.png';
 
 class AppNavBar extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class AppNavBar extends React.Component {
     return (
     <div>
       <Navbar color="light" light expand="md">
-        <NavbarBrand href="/"><img src={logo} width="150px" /></NavbarBrand>
+        <NavbarBrand href="/"><img src={logo} width="100px" /></NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
@@ -44,7 +44,7 @@ class AppNavBar extends React.Component {
               <NavLink href="https://github.com/AmeyaDaddikar">GitHub</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#login">Login</NavLink>
+              <NavLink href="/signup">Signup</NavLink>
             </NavItem>
           </Nav>
         </Collapse>

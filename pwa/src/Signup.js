@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import {
   Form,
   FormGroup,
@@ -7,8 +8,7 @@ import {
   Button,
   Card,
   CardImg,
-  CardBody,
-  CardHeader
+  CardBody
 } from 'reactstrap';
 
 import user_img from './user.png';
@@ -78,6 +78,7 @@ export default class Signup extends React.Component{
             <Input type="password" invalid={this.state.password.length >0 &&  !this.state.valid} name="confirm-password" id="confirm-password" placeholder="Re-enter the password" onInput={(e) => this.onConfirmPasswordChange(e.target.value)} />
           </FormGroup>
           <Button color='primary' className='d-block mx-auto' onClick={() => this.handleSubmit()}>Submit</Button>
+          <p className="text-center mt-3 mb-3">Already have an account? <Link to='/'>Login</Link></p>
         </Form>
         </CardBody>
       </Card>
