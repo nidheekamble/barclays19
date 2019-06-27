@@ -51,7 +51,7 @@ def signup():
 	user = User(name=form.username.data, password = hashed_password)
 	db.session.add(user)
 	db.session.commit()
-	
+
 	print (user)
 	if user:
 		return ('', 200)
@@ -81,36 +81,37 @@ def webhook():
 
 
 def showFavourites(data):
-@login_required
 	
-	favourites = retrieveFavourites()
-	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
-	print("Fulfillment for showing favourites : \n")
+	# favourites = retrieveFavourites()
+	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
+	# print("Fulfillment for showing favourites : \n")
 
-	for i in data:
-		print("", i, ":", data[i])
+	# for i in data:
+	# 	print("", i, ":", data[i])
 
-	print('\nEOF\n')
+	# print('\nEOF\n')
+	# return data
+
+	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': ["test"] }}]
 	return data
 
-
-def showGraph():
 @login_required
+def showGraph():
 
 	print('show graph here')
 	# add more here later
 	return ''
 
 
-def showNews():
 @login_required
+def showNews():
 
 	print('retrieve news')
 	return ''
 
 
-def addFavourites(stock_name):
 @login_required
+def addFavourites(stock_name):
 
 	print('adding favourites')
 	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
@@ -133,21 +134,21 @@ def retrieveFavourites():
 	return favourites
 
 
-def stockName(name_substr):
 @login_required
+def stockName(name_substr):
 
 	stockList = Stock.query.all()
 	similarStocks = []
 	for stock in stockList:
-		if (stock.stockName.find(name_substr) != (-1))
+		if (stock.stockName.find(name_substr) != (-1)):
 			similarStocks.append(stock.stockName)
 
 	print(similarStocks)
 	return jsonify(similarStocks)
 
 
-def news():
 @login_required
+def news():
 
 	favourites = retrieveFavourites()
 	# adding later

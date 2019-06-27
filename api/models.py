@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
 
 class Stocks(db.Model, UserMixin):
 	__tablename__ = 'Stocks'
-	stockName = db.Column(db.String, unique = True, nullable = False)
+	stockName = db.Column(db.String, primary_key = True, unique = True, nullable = False)
 	stockID = db.Column(db.String, unique = True, nullable = False)
 	openPrice = db.Column(db.Integer, unique = False, nullable = False)
 	wtAvgPrice = db.Column(db.Integer, unique = False, nullable = False)
@@ -30,7 +30,8 @@ class Stocks(db.Model, UserMixin):
 
 class Favourites(db.Model, UserMixin):
 	__tablename__ = 'Favourites'
-	user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer)
 	stock_name = db.Column(db.String, db.ForeignKey(Stocks.stockName))
 
 	def __repr__(self):
