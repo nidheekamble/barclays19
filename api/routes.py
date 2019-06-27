@@ -5,16 +5,15 @@ import hashlib
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin
-from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory
+from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory, jsonify
 from api.forms import UserForm, LoginForm
 from api.models import User, Stocks, Favourites
-#Sample AJAX REQUEST
+import os, dialogflow, json, pusher, requests
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
 	time.sleep(1)
 	return 'Hello'
-
 
 
 @app.route('/api/login', methods=['GET', 'POST'])
@@ -80,11 +79,7 @@ def webhook():
 def showFavourites(data):
 @login_required
 	
-	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
-	favourites = []
-	for pair in userStockPair:
-		favourites.append(pair.stock_name)
-
+	favourites = retrieveFavourites()
 	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
 	print("Fulfillment for showing favourites : \n")
 	for i in data:
@@ -102,3 +97,39 @@ def showNews():
 @login_required
 	print('retrieve news')
 	return ''
+
+def addFavourites(stock_name):
+@login_required
+	print('adding favourites')
+	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
+	db.session.add(userStockPair)
+	db.session.commit()
+	print(userStockPair)
+	return ('', 200)
+
+def retrieveFavourites():
+	print('retrieving favourites')
+	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
+	favourites = []
+	for pair in userStockPair:
+		favourites.append(pair.stock_name)
+	print(favourites)
+	return favourites
+
+def stockName(name_substr):
+@login_required
+	stockList = Stock.query.all()
+	similarStocks = []
+	for stock in stockList:
+		if (stock.stockName.find(name_substr) != (-1))
+			similarStocks.append(stock.stockName)
+	print(similarStocks)
+	return jsonify(similarStocks)
+
+def news():
+@login_required
+	favourites = retrieveFavourites()
+	# adding later
+	return ('', 200)
+
+
