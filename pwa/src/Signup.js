@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {
   Form,
   FormGroup,
@@ -13,14 +13,13 @@ import {
 
 import user_img from './user.png';
 
-export default class Signup extends React.Component{
+class Signup extends React.Component{
   constructor(props) {
     super(props);
 
     this.state = {
       username: '',
       password: '',
-      email: '',
       valid: false
     }
   }
@@ -33,12 +32,7 @@ export default class Signup extends React.Component{
       case 'password':
         this.setState(Object.assign({}, this.state, {password: inp}));
         break;
-      case 'email':
-        this.setState(Object.assign({}, this.state, {email: inp}));
-        break;
     }
-
-    
   }
 
   onConfirmPasswordChange(inp) {
@@ -46,12 +40,28 @@ export default class Signup extends React.Component{
   }
   
   handleSubmit() {
-    if (['username', 'email', 'password'].filter(field => this.state[field].length != 0).length > 0) {
-      alert('Invalid');
-      return
+
+    if (
+      (!this.state.valid) ||
+      (this.state.username == '') ||
+      (this.state.password == '')
+    )
+    {
+      alert('Invalid Details');
+      return;
     }
     
-    alert('Valid');
+    let formData = new FormData();
+    formData.append('username', this.state.username);
+    formData.append('password', this.state.password);
+    
+    fetch('/api/signup', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    })
+    .then (() =>     this.props.history.push('/') )
+    .catch(() => alert('Error creating account') )
   }
 
   render() {
@@ -64,10 +74,6 @@ export default class Signup extends React.Component{
           <FormGroup>
             <Label for="userName">Username</Label>
             <Input type="text" name="username" id="userName" placeholder="Choose a cool username" onChange={(e) => this.onInputChange(e.target.value, 'username')} />
-          </FormGroup>
-          <FormGroup>
-            <Label for="email">Email ID</Label>
-            <Input type="email" name="email" id="email" placeholder="Give us your email ID so we can reach you" onInput={(e) => this.onInputChange(e.target.value, 'username')} />
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
@@ -86,3 +92,5 @@ export default class Signup extends React.Component{
     )
   }
 }
+
+export default withRouter(Signup);

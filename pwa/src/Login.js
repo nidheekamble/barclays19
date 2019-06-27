@@ -42,11 +42,22 @@ class Login extends React.Component{
       ( this.state.password == undefined || this.state.password.length == 0 )
 
     ) {
-      alert('Invalid');
+      alert('Invalid Input');
       return
     }
-    
-    this.props.history.push('/dashboard');
+
+    let formData = new FormData();
+    formData.append('username', this.state.username);
+    formData.append('password', this.state.password);
+
+    fetch('/api/login', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    })
+    .then (() =>  this.props.history.push('/dashboard') )
+    .catch(() => alert('Invalid Credentials') )
+
   }
 
   render() {
