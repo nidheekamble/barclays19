@@ -4,3 +4,5 @@ dist/*
 !dist/manifest.json
 !dist/main.js
 !dist/sw.js
+!dist/icon_192.png
+!dist/icon_256.png
