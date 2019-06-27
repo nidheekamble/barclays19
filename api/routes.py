@@ -68,20 +68,34 @@ def webhook():
 	if req['queryResult']['action'] == "showFavourites":
 		print('showFavourites identified')
 		response = showFavourites(data)
-		r = jsonify(response)
-		r.headers['Content-Type'] = 'application/json'
-		return r
+
+		#### TRIAL 1, TRIAL 2, TRIAL 3
+		# r = jsonify(response)
+		# print ("\nRESPONSE\n")
+		# for i in response:
+		# 	print("", i, ":", response[i])
+		# r.headers['Content-Type'] = 'application/json'
+		# return r
+
 
 	elif ['queryResult']['action']=='showGraph':
 		print('showGraph identified')
 		response = showGraph() # confirm redirection to site?
 		r = jsonify(response)
+		print ("\nRESPONSE\n")
+		for i in response:
+			print("", i, ":", response[i])
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
 
-def showFavourites(data):
+def showFavourites():
+
+	favourites = retrieveFavourites()
+	return favourites
 	
+	######### TRIAL 1 
+
 	# favourites = retrieveFavourites()
 	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
 	# print("Fulfillment for showing favourites : \n")
@@ -92,8 +106,67 @@ def showFavourites(data):
 	# print('\nEOF\n')
 	# return data
 
-	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': ["test"] }}]
-	return data
+
+	######### TRIAL 2
+
+	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': ["pqr"] }}]
+	# return data
+
+
+	######### TRIAL 3
+
+	#favourites = retrieveFavourites()
+# 	responseId = data['responseId']
+# 	queryText = data['queryResult']['queryText']
+# 	action = data['queryResult']['action']
+# 	favList = data['queryResult']['parameters']['favList']
+# 	allRequiredParamsPresent = data['queryResult']['allRequiredParamsPresent']
+# 	#fulfillmentText = favourites
+# 	fulfillmentText = 'something'
+# 	name = data['queryResult']['intent']['name']
+# 	displayName = data['queryResult']['intent']['displayName']
+# 	intentDetectionConfidence = data['queryResult']['intentDetectionConfidence']
+# 	languageCode = data['queryResult']['languageCode']
+# 	payload = data['originalDetectIntentRequest']['payload']
+# 	session = data['session']
+
+# 	print ('\nData set\n')
+# 	return {
+#   "responseId": responseId,
+#   "queryResult": {
+#     "queryText": queryText,
+#     "action": action,
+#     "parameters": {
+#       "favList": [
+#         favList
+#       ]
+#     },
+#     "allRequiredParamsPresent": allRequiredParamsPresent,
+#     "fulfillmentText": "dddd" ,
+#     "fulfillmentMessages": [
+#       {
+#         "text": {
+#           "text": [
+#             "dddd" 
+#           ]
+#         }
+#       }
+#     ],
+#     "intent": {
+#       "name": name,
+#       "displayName": displayName
+#     },
+#     "intentDetectionConfidence": intentDetectionConfidence,
+#     "languageCode": languageCode
+#   },
+#   "originalDetectIntentRequest": {
+#     "payload": payload
+#   },
+#   "session": session
+# }
+
+
+
 
 @login_required
 def showGraph():
