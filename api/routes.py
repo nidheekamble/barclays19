@@ -5,10 +5,10 @@ import hashlib
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import Session
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin
-from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory
-from api.forms import UserForm
-from api.models import User
-#Sample AJAX REQUEST
+from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory, jsonify
+from api.forms import UserForm, LoginForm
+from api.models import User, Stocks, Favourites
+import os, dialogflow, json, pusher, requests
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
@@ -16,11 +16,11 @@ def hello():
 	return 'Hello'
 
 
-
 @app.route('/api/login', methods=['GET', 'POST'])
 def login():
-	name = request.form['name']
-	password = request.form['password']
+	form = LoginForm()
+	name = form.username.data
+	password = form.password.data
 	user = User.query.filter_by(name=name).first()
 
 	s = 0
@@ -46,7 +46,7 @@ def signup():
 		s = s+a #sum of ASCIIs acts as the salt
 	hashed_password = (str)((hashlib.sha512((str(s).encode('utf-8'))+((pw).encode('utf-8')))).hexdigest())
 
-	user = User(name=form.name.data, password = hashed_password, about=form.about.data)
+	user = User(name=form.username.data, password = hashed_password)
 	db.session.add(user)
 	db.session.commit()
 	print (user)
@@ -62,32 +62,74 @@ def webhook():
 
 	#req = json.loads(data)
 	req = data
-	if req['queryResult']['action'] == "reqSher":
-		print('sher action accessed')
-		response = sher(data)
+	if req['queryResult']['action'] == "showFavourites":
+		print('showFavourites identified')
+		response = showFavourites(data)
 		r = jsonify(response)
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
-	elif ['queryResult']['action']=='reqGhazal':
-		print('ghazal action accessed')
-		response = ghazal(data)
+	elif ['queryResult']['action']=='showGraph':
+		print('showGraph identified')
+		response = showGraph() # confirm redirection to site?
 		r = jsonify(response)
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
-def sher(data):
-	collection = [" 'aasmaan itni bulandi pe jo itraata hai, bhuul jaata hai zameen se hi nazar aata hai' - Waseem Barelvi",
-			" 'har shaḳhs dauDta hai yahaan bhiiD ki taraf, phir ye bhi chahta hai use rasta mile' - Waseem Barelvi",
-			" 'har-chand e'tibaar mein dhoke bhi hain magar, ye to nahin kisi pe bharosa kiya na jaa.e' - Jaan Nisar Akhtar ", 
-			" 'jhuuT vaale kahin se kahin baDh ga.e, aur main tha ki sach bolta reh gaya' - Waseem Barelvi",
-			" 'dosti aur kisi gharaz ke liye, vo tijaarat hai dosti hi nahin' - Ismail Merathi"]
-	selected = collection[random.randrange(0,5,1)]
-	print("\nSelected sher = "+selected)
-
-	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': [selected] }}]
-	print("Data in sher fulfillment : \n")
+def showFavourites(data):
+@login_required
+	
+	favourites = retrieveFavourites()
+	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
+	print("Fulfillment for showing favourites : \n")
 	for i in data:
 		print("", i, ":", data[i])
-	print('\ntext set for sher')
+	print('\nEOF\n')
 	return data
+
+def showGraph():
+@login_required
+	print('show graph here')
+	# add more here later
+	return ''
+
+def showNews():
+@login_required
+	print('retrieve news')
+	return ''
+
+def addFavourites(stock_name):
+@login_required
+	print('adding favourites')
+	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
+	db.session.add(userStockPair)
+	db.session.commit()
+	print(userStockPair)
+	return ('', 200)
+
+def retrieveFavourites():
+	print('retrieving favourites')
+	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
+	favourites = []
+	for pair in userStockPair:
+		favourites.append(pair.stock_name)
+	print(favourites)
+	return favourites
+
+def stockName(name_substr):
+@login_required
+	stockList = Stock.query.all()
+	similarStocks = []
+	for stock in stockList:
+		if (stock.stockName.find(name_substr) != (-1))
+			similarStocks.append(stock.stockName)
+	print(similarStocks)
+	return jsonify(similarStocks)
+
+def news():
+@login_required
+	favourites = retrieveFavourites()
+	# adding later
+	return ('', 200)
+
+
