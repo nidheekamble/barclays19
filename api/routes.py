@@ -12,12 +12,14 @@ import os, dialogflow, json, pusher, requests
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
+
 	time.sleep(1)
 	return 'Hello'
 
 
 @app.route('/api/login', methods=['GET', 'POST'])
 def login():
+
 	form = LoginForm()
 	name = form.username.data
 	password = form.password.data
@@ -34,9 +36,9 @@ def login():
 	return('not signed in')
 
 
-
 @app.route('/api/signup', methods=['GET', 'POST'])
 def signup():
+
 	form = UserForm()
 	pw = form.password.data
 
@@ -49,6 +51,7 @@ def signup():
 	user = User(name=form.username.data, password = hashed_password)
 	db.session.add(user)
 	db.session.commit()
+	
 	print (user)
 	if user:
 		return ('', 200)
@@ -57,11 +60,11 @@ def signup():
 
 @app.route('/webhook', methods = ['GET', 'POST'])
 def webhook():
+
 	data = request.get_json(silent=True, force=True)
 	print('Data: '+json.dumps(data, indent=4))
-
-	#req = json.loads(data)
 	req = data
+
 	if req['queryResult']['action'] == "showFavourites":
 		print('showFavourites identified')
 		response = showFavourites(data)
@@ -76,58 +79,76 @@ def webhook():
 		r.headers['Content-Type'] = 'application/json'
 		return r
 
+
 def showFavourites(data):
 @login_required
 	
 	favourites = retrieveFavourites()
 	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
 	print("Fulfillment for showing favourites : \n")
+
 	for i in data:
 		print("", i, ":", data[i])
+
 	print('\nEOF\n')
 	return data
 
+
 def showGraph():
 @login_required
+
 	print('show graph here')
 	# add more here later
 	return ''
 
+
 def showNews():
 @login_required
+
 	print('retrieve news')
 	return ''
 
+
 def addFavourites(stock_name):
 @login_required
+
 	print('adding favourites')
 	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
 	db.session.add(userStockPair)
 	db.session.commit()
+
 	print(userStockPair)
 	return ('', 200)
 
+
 def retrieveFavourites():
+
 	print('retrieving favourites')
 	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
 	favourites = []
 	for pair in userStockPair:
 		favourites.append(pair.stock_name)
+
 	print(favourites)
 	return favourites
 
+
 def stockName(name_substr):
 @login_required
+
 	stockList = Stock.query.all()
 	similarStocks = []
 	for stock in stockList:
 		if (stock.stockName.find(name_substr) != (-1))
 			similarStocks.append(stock.stockName)
+
 	print(similarStocks)
 	return jsonify(similarStocks)
 
+
 def news():
 @login_required
+
 	favourites = retrieveFavourites()
 	# adding later
 	return ('', 200)
