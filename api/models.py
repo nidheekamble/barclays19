@@ -17,8 +17,9 @@ class User(db.Model, UserMixin):
 
 class Stocks(db.Model, UserMixin):
 	__tablename__ = 'Stocks'
-	stockName = db.Column(db.String, primary_key = True, unique = True, nullable = False)
-	stockID = db.Column(db.String, unique = True, nullable = False)
+	id = db.Column(db.Integer, primary_key=True)
+	stockName = db.Column(db.String, nullable = False)
+	stockID = db.Column(db.String, nullable = False)
 	openPrice = db.Column(db.Integer, unique = False, nullable = False)
 	wtAvgPrice = db.Column(db.Integer, unique = False, nullable = False)
 	highPrice = db.Column(db.Integer, unique = False, nullable = False)
@@ -26,7 +27,7 @@ class Stocks(db.Model, UserMixin):
 	closePrice = db.Column(db.Integer, unique = False, nullable = False)
 
 	def __repr__(self):
-		return f"Stocks('{self.openPrice}', '{self.wtAvgPrice}', '{self.highPrice}', '{self.lowPrice}', '{self.closePrice}')"
+		return f"Stocks('{self.stockName}', '{self.stockID}', {self.openPrice}', '{self.wtAvgPrice}', '{self.highPrice}', '{self.lowPrice}', '{self.closePrice}')"
 
 class Favourites(db.Model, UserMixin):
 	__tablename__ = 'Favourites'
@@ -36,3 +37,14 @@ class Favourites(db.Model, UserMixin):
 
 	def __repr__(self):
 		return f"Favourites('{self.user_id}', '{self.stock_id}')"
+
+class News(db.Model, UserMixin):
+	__tablename__ = 'News'
+	id =  db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String)
+	newsURL = db.Column(db.String)
+	text = db.Column(db.String)
+	title = db.Column(db.String)
+
+	def __repr__(self):
+		return f"News('{self.id}', '{self.name}', {self.newsURL}', '{self.text}', '{self.title}')"

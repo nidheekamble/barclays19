@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin
 from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory, jsonify
 from api.forms import UserForm, LoginForm
-from api.models import User, Stocks, Favourites
+from api.models import User, Stocks, Favourites, News
 import os, dialogflow, json, pusher, requests
 
 @app.route('/api/hello', methods=['POST'])
@@ -67,15 +67,13 @@ def webhook():
 
 	if req['queryResult']['action'] == "showFavourites":
 		print('showFavourites identified')
-		response = showFavourites(data)
-
-		#### TRIAL 1, TRIAL 2, TRIAL 3
-		# r = jsonify(response)
-		# print ("\nRESPONSE\n")
-		# for i in response:
-		# 	print("", i, ":", response[i])
-		# r.headers['Content-Type'] = 'application/json'
-		# return r
+		response = showFavourites()
+		r = jsonify(response)
+		print ("\nRESPONSE\n")
+		for i in response:
+			print("", i, ":", response[i])
+		r.headers['Content-Type'] = 'application/json'
+		return r
 
 
 	elif ['queryResult']['action']=='showGraph':
@@ -96,15 +94,15 @@ def showFavourites():
 	
 	######### TRIAL 1 
 
-	# favourites = retrieveFavourites()
-	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
-	# print("Fulfillment for showing favourites : \n")
+	favourites = retrieveFavourites()
+	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
+	print("Fulfillment for showing favourites : \n")
 
-	# for i in data:
-	# 	print("", i, ":", data[i])
+	for i in data:
+		print("", i, ":", data[i])
 
-	# print('\nEOF\n')
-	# return data
+	print('\nEOF\n')
+	return data
 
 
 	######### TRIAL 2
@@ -199,16 +197,16 @@ def retrieveFavourites():
 
 	print('retrieving favourites')
 	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
-	favourites = []
-	for pair in userStockPair:
-		favourites.append(pair.stock_name)
+	# favourites = []
+	# for pair in userStockPair:
+	# 	favourites.append(pair.stock_name)
 
-	print(favourites)
-	return favourites
+	print(userStockPair)
+	return userStockPair
 
 
 @login_required
-def stockName(name_substr):
+def searchStockName(name_substr):
 
 	stockList = Stock.query.all()
 	similarStocks = []
@@ -221,6 +219,7 @@ def stockName(name_substr):
 
 
 @login_required
+@app.route('/api/news', methods=['POST'])
 def news():
 
 	favourites = retrieveFavourites()
