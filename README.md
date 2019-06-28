@@ -16,7 +16,8 @@ INTRODUCTION
   * **News feed:**<br> Includes news about trending stocks and the ones shortlisted <br><br>
   
 <img src="https://github.com/nidheekamble/barclays19/blob/master/whatIsPWA.PNG"> 
-*Image source: https://codeburst.io/all-you-need-to-know-about-progressive-web-app-4ba73368da66*<hr>
+Image source: https://codeburst.io/all-you-need-to-know-about-progressive-web-app-4ba73368da66 <hr>
+
 SETUP
 -----
 
@@ -69,7 +70,7 @@ EXTENSION
  MAINTAINERS
  -----------
 
-This project has been developed in the final round of *Barclays India Hackathon 2019*, at Pune, India in the time period of one day.
+This project has been developed in the final round of *Barclays India Hackathon 2019*, at Pune, India in the time period of fifteen hours.
 The contributors to the project and this repository are :
 
 Mr. Ameya Daddikar (`AmeyaDaddikar`)<br>
