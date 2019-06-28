@@ -29,10 +29,9 @@ for stock in ['BAJAJ', 'HDFC', 'ICICI', 'TCS', 'INFY']:
 
 
 
-
-
 f1 = Favourites(user_id =1, stock_name="BAJAJ")
-f2 = Favourites(user_id =2, stock_name="TCS")
+f2 = Favourites(user_id =1, stock_name="TCS")
+f3 = Favourites(user_id =2, stock_name="HDFC")
 db.session.add(f1)
 db.session.add(f2)
 db.session.commit()

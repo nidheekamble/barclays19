@@ -8,7 +8,7 @@ from flask_login import login_user, current_user, logout_user, login_required, U
 from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory, jsonify
 from api.forms import UserForm, LoginForm
 from api.models import User, Stocks, Favourites, News
-import os, dialogflow, json, pusher, requests
+import os, dialogflow, json, pusher, requests, csv
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
@@ -17,7 +17,7 @@ def hello():
 	return 'Hello'
 
 
-@app.route('/api/login', methods=['GET', 'POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
 
 	form = LoginForm()
@@ -31,12 +31,13 @@ def login():
 		s = s+a #sum of ASCIIs acts as the salt
 	now_hash = (str)((hashlib.sha512((str(s).encode('utf-8'))+((password).encode('utf-8')))).hexdigest())
 
+	session.add(user)
 	if (user and (user.password==now_hash)):
 		return ('signed in', 200, {'Content-Type': 'application/json'})
 	return('not signed in')
 
 
-@app.route('/api/signup', methods=['GET', 'POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
 
 	form = UserForm()
@@ -57,6 +58,91 @@ def signup():
 		return ('', 200)
 	return ('', 400)
 
+
+@login_required
+@app.route('/api/news', methods=['POST'])
+def news(stock):
+	
+	stockNews = News.query.filter_by(name = stock).first()
+	print('retrieve news')
+	return dict(stockNews)
+
+
+@app.route('/api/getData', methods=['GET'])
+def getData():
+
+	dirname = os.path.join(os.getcwd(), 'api','data')
+	print(dirname)
+	stock = request.args.get('stock')
+	data = "" 
+	if stock == 'BAJAJ':
+		file = dirname+"\BAJFIN.csv"
+
+	elif stock == 'HDFC':
+		file = "\HDFC.csv"
+
+	elif stock == 'ICICI':
+		file = "\ICICI.csv"
+
+	elif stock == 'TCS':
+		file = "\Tata.csv"
+
+	elif stock == 'INFY':
+		file = "\INFI.csv"
+
+	with open(file, "r") as inp:
+			for row in csv.reader(inp):
+				data += ", ".join(row)+"\n"
+	return data
+
+
+def searchStockName(name_substr):
+
+	stockList = Stocks.query.all()
+	similarStocks = []
+	for stock in stockList:
+		if (stock.stockName.find(name_substr) != (-1)):
+			similarStocks.append(stock.stockName)
+
+	print(similarStocks)
+	return jsonify(similarStocks)
+
+
+
+###### ADDITIONAL #######
+
+
+def addFavourites(stock_name):
+
+	print('adding favourites')
+	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
+	db.session.add(userStockPair)
+	db.session.commit()
+
+	print(userStockPair)
+	return ('', 200)
+
+
+def retrieveFavourites():
+
+	print('retrieving favourites')
+	userStockPair = Favourites.query.filter_by(user_id = current_user.id).first() 
+	print(userStockPair)
+	return userStockPair
+
+
+@app.route('/api/showFav', methods=['POST'])
+def showFavourites():
+
+	userStockPair = retrieveFavourites()
+	favourites = []
+	for pair in userStockPair:
+		stockDetails = Stocks.query.filter_by(stockID = pair.stock_name).first()
+		favourites.append(stockDetails)
+	
+	favDict = dict((element[1], element[2:]) for element in favourites) 
+	return favDict
+	
 
 @app.route('/webhook', methods = ['GET', 'POST'])
 def webhook():
@@ -85,24 +171,18 @@ def webhook():
 			print("", i, ":", response[i])
 		r.headers['Content-Type'] = 'application/json'
 		return r
+######### DialogFlow (In case)
+######### TRIAL 1 
 
+	# favourites = retrieveFavourites()
+	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
+	# print("Fulfillment for showing favourites : \n")
 
-def showFavourites():
+	# for i in data:
+	# 	print("", i, ":", data[i])
 
-	favourites = retrieveFavourites()
-	return favourites
-	
-	######### TRIAL 1 
-
-	favourites = retrieveFavourites()
-	data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
-	print("Fulfillment for showing favourites : \n")
-
-	for i in data:
-		print("", i, ":", data[i])
-
-	print('\nEOF\n')
-	return data
+	# print('\nEOF\n')
+	# return data
 
 
 	######### TRIAL 2
@@ -162,68 +242,3 @@ def showFavourites():
 #   },
 #   "session": session
 # }
-
-
-
-
-@login_required
-def showGraph():
-
-	print('show graph here')
-	# add more here later
-	return ''
-
-
-@login_required
-def showNews():
-
-	print('retrieve news')
-	return ''
-
-
-@login_required
-def addFavourites(stock_name):
-
-	print('adding favourites')
-	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
-	db.session.add(userStockPair)
-	db.session.commit()
-
-	print(userStockPair)
-	return ('', 200)
-
-
-def retrieveFavourites():
-
-	print('retrieving favourites')
-	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
-	# favourites = []
-	# for pair in userStockPair:
-	# 	favourites.append(pair.stock_name)
-
-	print(userStockPair)
-	return userStockPair
-
-
-@login_required
-def searchStockName(name_substr):
-
-	stockList = Stock.query.all()
-	similarStocks = []
-	for stock in stockList:
-		if (stock.stockName.find(name_substr) != (-1)):
-			similarStocks.append(stock.stockName)
-
-	print(similarStocks)
-	return jsonify(similarStocks)
-
-
-@login_required
-@app.route('/api/news', methods=['POST'])
-def news():
-
-	favourites = retrieveFavourites()
-	# adding later
-	return ('', 200)
-
-
