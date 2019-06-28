@@ -55,7 +55,7 @@ class Login extends React.Component{
       credentials: 'include',
       body: formData
     })
-    .then (() =>  this.props.history.push('/dashboard') )
+    .then (() =>  this.props.history.push('/search') )
     .catch(() => alert('Invalid Credentials') )
 
   }

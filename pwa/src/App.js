@@ -5,6 +5,7 @@ import Signup from './Signup';
 import Home from './Home'
 
 import Dashboard from './dashboard';
+import Search from './search';
 
 class App extends React.Component {
   render() {
@@ -14,6 +15,7 @@ class App extends React.Component {
         <Route exact path="/" component={Home} />
         <Route path="/signup" component={Signup} />
         <Route path='/dashboard' component={Dashboard} />
+        <Route path='/search' component={Search} />
       </Router>
     )
   }
