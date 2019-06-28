@@ -4,16 +4,16 @@ CONTENTS OF THIS FILE
  * Introduction
  * Setup
  * Techstack
+ * Extension
  * Maintainers
 
 INTRODUCTION
 ------------
 
-This is a prototype PWA that aims at profitable user investment by assisting the users in analyzing current stockmarket trends. The functionalities in the PWA include:<br>
-  * **Search and shortlist:**<br>Stocks available can be searched for and shortlisted. Shortlisted stocks can be analyzed and compared further <br><br>
-  * **Stock Prediction: Sentiment Analysis:**<br><br>
-  * **Live news feed:**<br> Includes news about trending stocks and the ones shortlisted <br><br>
-  * **Assistance and platform extension: Chatbot (DialogFlow):**<br> Processing natural input by the user and displaying results in accordance with aforementioned features. The chatbot used can also be exported to Google Assistant, Facebook Messenger, and other bot services to avail on other platforms the functionalities provided by PWA.<br><br>
+*Stockwatch* is a prototype PWA that aims at profitable user investment by assisting the users in analyzing current stockmarket trends. The functionalities in the PWA include:<br>
+  * **Search**<br>Stocks available can be searched for and analyzed<br><br>
+  * **Stock Prediction:** The said analysis is done on the basis of data available on the prices (WAP, highest, lowest, opening, etc.) at the corresponding date(s). The extent of range of prediction varies in accordance with the beginning date (of the data availability.<br>The analysis is diaplyed graphically over the given range, with the appropriate suggestion of buying, selling, or holding the stock depending on the current date and its status with regards to the user.<br><br>
+  * **News feed:**<br> Includes news about trending stocks and the ones shortlisted <br><br>
   
 SETUP
 -----
@@ -53,9 +53,16 @@ e.g: /api/hello
 TECHSTACK
 ---------
 
-* `Flask: Python 3.6, SQLAlchemy`
-* `DialogFlow` (uses `Flask Webhook`): prototype functional in Google Assistant and PWA
-* `React`
+* `Flask: Python 3.6`, `SQLAlchemy`
+* `React: JavaScript` for PWA
+
+EXTENSION
+---------
+
+* **DialogFlow: webhook and export to Third Party Assistants:** The current project is configured with Dialogflow and its `Flask` module. The webhook route exists in `api/routes/py`. An agent can be created to identify intends and trigger respective actions, and can be exported to Google Assistant, Facebook messenger, etc. <br><br>
+
+* **Shortlisting:** The extant features can be made to operate on just the marked/shortlisted, instead of *all* records
+
 
  MAINTAINERS
  -----------
