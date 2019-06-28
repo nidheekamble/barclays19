@@ -17,6 +17,33 @@ class ResultView extends React.Component {
     super(props);
   }
 
+  investmentRecommendation() {
+    let values = this.props.points[1]
+
+    let currVal = values[0]
+
+    const max = Math.max(...values)
+    const min = Math.min(...values)
+    const avg = values.reduce( ( p, c ) => p + c, 0 ) / values.length;
+
+    if (currVal > avg)
+      return {
+        color: 'success',
+        msg: 'Buy'
+      }
+
+    if (currVal <= avg)
+      return {
+        color: 'primary',
+        msg: 'Buy'
+      }
+
+    return {
+      color: 'secondary',
+      msg: 'Hold'
+    }
+  }
+
   render() {
     if (this.props.news == undefined && this.props.points == undefined) {
       return (
@@ -25,12 +52,15 @@ class ResultView extends React.Component {
         </Container>
       )
     }
+
+    const prediction = this.investmentRecommendation();
+
     return(
     <Container>
     <Row>
       <Col md={7}>
         <Graph points={this.props.points} stock={this.props.stock}/>
-        Recommended investment strategy: <Badge color="secondary" className='pt-1 mt-2'>Buy</Badge>
+        Recommended investment strategy: <Badge color={prediction.color} className='pt-1 mt-2'>{prediction.msg}</Badge>
       </Col>
       <Col md={5}>
         <News news={this.props.news} />
