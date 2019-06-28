@@ -8,11 +8,23 @@ import Dashboard from './dashboard';
 import Search from './search';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loggedIn: false
+    }
+  }
+
+  onLoginSuccess() {
+    this.setState({loggedIn: true});
+    console.log('LOGGED IN')
+  }
   render() {
     return (
       <Router>
-        <AppNavBar />
-        <Route exact path="/" component={Home} />
+        <AppNavBar loggedIn={this.state.loggedIn} />
+        <Route exact path="/" render={props => <Home {...props} onLoginSuccess={this.onLoginSuccess.bind(this)} /> } />
         <Route path="/signup" component={Signup} />
         <Route path='/dashboard' component={Dashboard} />
         <Route path='/search' component={Search} />

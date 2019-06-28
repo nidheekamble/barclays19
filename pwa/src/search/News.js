@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 
 const scrollingStyle = {
-  maxHeight: '600px',
+  maxHeight: '400px',
   overflowY: 'scroll'
 }
 
@@ -35,23 +35,20 @@ class News extends React.Component {
     }
   }
 
-  getListItems(category) {
+  getListItems() {
     // if (this.props.news == undefined || this.props.news.length == 0)
     //   return <ListGroupItem>There are no news based on {category} topics.</ListGroupItem>;
     
-    return [
-      {
-        title: 'Dummy Title::' + category,
-        description: 'This is a dummy article about a dummy topic that might be replaced later on'
-      },
-      {
-        title: 'Dummy Title::' + category,
-        description: 'This is a dummy article about a dummy topic that might be replaced later on'
-      }
-    ].map((article, id) => 
+    if (this.props.news == undefined)
+      return;
+
+    console.log(this.props.news)
+    return this.props.news.map((article, id) => 
       <ListGroupItem key={id}>
-        <ListGroupItemHeading>{article.title}</ListGroupItemHeading>
-        <ListGroupItemText>{article.description}</ListGroupItemText>
+        <ListGroupItemHeading><a target='_blank' href={article.newsURL}>{article.title}</a></ListGroupItemHeading>
+        <ListGroupItemText>
+          {article.text}
+        </ListGroupItemText>
       </ListGroupItem>
     )
   }
@@ -60,7 +57,7 @@ class News extends React.Component {
       <div>
         <h5>News</h5>
           <ListGroup style={scrollingStyle} >
-            { this.getListItems('watchlist') }
+            { this.getListItems() }
           </ListGroup>
       </div>
     )

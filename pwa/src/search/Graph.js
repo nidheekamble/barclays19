@@ -2,11 +2,12 @@ import React from 'react';
 import {Line} from 'react-chartjs-2';
 
 
-const data = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+function data(labels, data, title=''){ 
+  return ({
+  labels: labels,
   datasets: [
     {
-      label: 'My First dataset',
+      label: title,
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(75,192,192,0.4)',
@@ -24,34 +25,31 @@ const data = {
       pointHoverBorderWidth: 2,
       pointRadius: 1,
       pointHitRadius: 10,
-      data: [65, 59, 80, 81, 56, 55, 40]
+      data: data
     }
   ]
-};
+})
+}
 
 
 class GraphDiv extends React.Component {
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      activeTab: '1'
-    };
   }
 
-  toggle(tab) {
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab
-      });
-    }
-  }
 
   render() {
+    if (this.props === undefined)
+      return (
+        <div>
+          <Line data={data([], [])} />
+        </div>
+
+      )
     return(
       <div>
-        <Line data={data} />
+        <Line data={data(this.props.points[0], this.props.points[1], `Projected value of ${this.props.stock} stock`)} />
       </div>
     )
   }

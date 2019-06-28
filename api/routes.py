@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 from flask_login import login_user, current_user, logout_user, login_required, UserMixin
 from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory, jsonify
 from api.forms import UserForm, LoginForm
-from api.models import User, Stocks, Favourites
-import os, dialogflow, json, pusher, requests
+from api.models import User, Stocks, Favourites, News
+import os, dialogflow, json, pusher, requests, csv
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
@@ -17,7 +17,7 @@ def hello():
 	return 'Hello'
 
 
-@app.route('/api/login', methods=['GET', 'POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
 
 	form = LoginForm()
@@ -31,12 +31,13 @@ def login():
 		s = s+a #sum of ASCIIs acts as the salt
 	now_hash = (str)((hashlib.sha512((str(s).encode('utf-8'))+((password).encode('utf-8')))).hexdigest())
 
+	session.add(user)
 	if (user and (user.password==now_hash)):
 		return ('signed in', 200, {'Content-Type': 'application/json'})
 	return('not signed in')
 
 
-@app.route('/api/signup', methods=['GET', 'POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
 
 	form = UserForm()
@@ -58,6 +59,99 @@ def signup():
 	return ('', 400)
 
 
+@app.route('/api/news', methods=['GET'])
+def news():
+	stock = request.args.get('stock')
+	print(stock)
+	stockNews = News.query.filter_by(name = stock).limit(5).all()
+	print('retrieve news')
+
+	# 	name = db.Column(db.String)
+	# newsURL = db.Column(db.String)
+	# text = db.Column(db.String)
+	# title = db.Column(db.String)
+	return jsonify([{'name': x.name, 'newsURL': x.newsURL, 'text': x.text, 'title': x.title} for x in stockNews] )
+
+
+@app.route('/api/getData', methods=['GET'])
+def getData():
+
+	dirname = os.path.join(os.getcwd(), 'api','data')
+	print(dirname)
+	stock = request.args.get('stock')
+	data = "" 
+	file_name = ""
+	if stock == 'BAJAJ':
+		file_name = "BAJFIN.csv"
+
+	elif stock == 'HDFC':
+		file_name = "HDFC.csv"
+
+	elif stock == 'ICICI':
+		file_name = "ICICI.csv"
+
+	elif stock == 'TCS':
+		file_name = "Tata.csv"
+
+	elif stock == 'INFY':
+		file_name = "INFI.csv"
+	else:
+		return ('', 400)
+
+	with open(os.path.join(dirname, file_name), "r") as inp:
+			for row in csv.reader(inp):
+				data += ", ".join(row)+"\n"
+	return data
+
+
+def searchStockName(name_substr):
+
+	stockList = Stocks.query.all()
+	similarStocks = []
+	for stock in stockList:
+		if (stock.stockName.find(name_substr) != (-1)):
+			similarStocks.append(stock.stockName)
+
+	print(similarStocks)
+	return jsonify(similarStocks)
+
+
+
+###### ADDITIONAL #######
+
+
+def addFavourites(stock_name):
+
+	print('adding favourites')
+	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
+	db.session.add(userStockPair)
+	db.session.commit()
+
+	print(userStockPair)
+	return ('', 200)
+
+
+def retrieveFavourites():
+
+	print('retrieving favourites')
+	userStockPair = Favourites.query.filter_by(user_id = current_user.id).first() 
+	print(userStockPair)
+	return userStockPair
+
+
+@app.route('/api/showFav', methods=['POST'])
+def showFavourites():
+
+	userStockPair = retrieveFavourites()
+	favourites = []
+	for pair in userStockPair:
+		stockDetails = Stocks.query.filter_by(stockID = pair.stock_name).first()
+		favourites.append(stockDetails)
+	
+	favDict = dict((element[1], element[2:]) for element in favourites) 
+	return favDict
+	
+
 @app.route('/webhook', methods = ['GET', 'POST'])
 def webhook():
 
@@ -67,15 +161,13 @@ def webhook():
 
 	if req['queryResult']['action'] == "showFavourites":
 		print('showFavourites identified')
-		response = showFavourites(data)
-
-		#### TRIAL 1, TRIAL 2, TRIAL 3
-		# r = jsonify(response)
-		# print ("\nRESPONSE\n")
-		# for i in response:
-		# 	print("", i, ":", response[i])
-		# r.headers['Content-Type'] = 'application/json'
-		# return r
+		response = showFavourites()
+		r = jsonify(response)
+		print ("\nRESPONSE\n")
+		for i in response:
+			print("", i, ":", response[i])
+		r.headers['Content-Type'] = 'application/json'
+		return r
 
 
 	elif ['queryResult']['action']=='showGraph':
@@ -87,14 +179,8 @@ def webhook():
 			print("", i, ":", response[i])
 		r.headers['Content-Type'] = 'application/json'
 		return r
-
-
-def showFavourites():
-
-	favourites = retrieveFavourites()
-	return favourites
-	
-	######### TRIAL 1 
+######### DialogFlow (In case)
+######### TRIAL 1 
 
 	# favourites = retrieveFavourites()
 	# data['queryResult']['fulfillmentMessages'] = [{'text': {'text': favourites }}]
@@ -164,67 +250,3 @@ def showFavourites():
 #   },
 #   "session": session
 # }
-
-
-
-
-@login_required
-def showGraph():
-
-	print('show graph here')
-	# add more here later
-	return ''
-
-
-@login_required
-def showNews():
-
-	print('retrieve news')
-	return ''
-
-
-@login_required
-def addFavourites(stock_name):
-
-	print('adding favourites')
-	userStockPair = Favourites(user_id = current_user.id, stock_name = stock_name)
-	db.session.add(userStockPair)
-	db.session.commit()
-
-	print(userStockPair)
-	return ('', 200)
-
-
-def retrieveFavourites():
-
-	print('retrieving favourites')
-	userStockPair = Favourites.query.filter_by(user_id = current_user.id).all()
-	favourites = []
-	for pair in userStockPair:
-		favourites.append(pair.stock_name)
-
-	print(favourites)
-	return favourites
-
-
-@login_required
-def stockName(name_substr):
-
-	stockList = Stock.query.all()
-	similarStocks = []
-	for stock in stockList:
-		if (stock.stockName.find(name_substr) != (-1)):
-			similarStocks.append(stock.stockName)
-
-	print(similarStocks)
-	return jsonify(similarStocks)
-
-
-@login_required
-def news():
-
-	favourites = retrieveFavourites()
-	# adding later
-	return ('', 200)
-
-

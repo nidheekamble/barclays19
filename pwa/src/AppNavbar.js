@@ -32,6 +32,21 @@ class AppNavBar extends React.Component {
     });
   }
 
+  userLink(isLoggedIn) {
+    if(isLoggedIn)
+      return (
+        <NavItem>
+          <NavLink href="/">Logout</NavLink>
+        </NavItem>
+      )
+
+      return (
+        <NavItem>
+          <NavLink href="/">Login</NavLink>
+        </NavItem>
+      )
+
+  }
   render() {
     return (
     <div>
@@ -43,9 +58,7 @@ class AppNavBar extends React.Component {
             <NavItem>
               <NavLink href="https://github.com/AmeyaDaddikar">GitHub</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink href="/signup">Signup</NavLink>
-            </NavItem>
+              {this.userLink(this.props.loggedIn)}
           </Nav>
         </Collapse>
       </Navbar>

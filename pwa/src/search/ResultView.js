@@ -18,8 +18,7 @@ class ResultView extends React.Component {
   }
 
   render() {
-
-    if (this.props.data == undefined) {
+    if (this.props.news == undefined && this.props.points == undefined) {
       return (
         <Container>
           <Jumbotron><h3 className='text-center'>Search for stocks to show more details</h3></Jumbotron>
@@ -30,11 +29,11 @@ class ResultView extends React.Component {
     <Container>
     <Row>
       <Col md={7}>
-        <Graph />
+        <Graph points={this.props.points} stock={this.props.stock}/>
+        Recommended investment strategy: <Badge color="secondary" className='pt-1 mt-2'>Buy</Badge>
       </Col>
       <Col md={5}>
-        <News />
-        <Badge color="primary" className='p-3 mt-2'>Buy</Badge>
+        <News news={this.props.news} />
       </Col>
     </Row>
     </Container>

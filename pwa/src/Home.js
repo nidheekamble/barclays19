@@ -17,9 +17,9 @@ export default class Home extends React.Component {
     return(
     <div>
       <Jumbotron>
-        <h1 className='text-center'>Welcome to StackWatch!</h1>
+        <h1 className='text-center'>Welcome to StockWatch!</h1>
       </Jumbotron>
-      <Login />
+      <Login onLoginSuccess={this.props.onLoginSuccess} />
       <p className="text-center mt-2 mb-4">Don't have an account yet? <Link to='/signup'>Signup</Link></p>
     </div>
     )
