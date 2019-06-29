@@ -15,6 +15,9 @@ INTRODUCTION
   * **Stock Prediction:** The said analysis is done on the basis of data available on the prices (WAP, highest, lowest, opening, etc.) at the corresponding date(s). The extent of range of prediction varies in accordance with the beginning date (of the data availability.<br>The analysis is diaplyed graphically over the given range, with the appropriate suggestion of buying, selling, or holding the stock depending on the current date and its status with regards to the user.<br><br>
   * **News feed:**<br> Includes news about trending stocks and the ones shortlisted <br><br>
   
+<img src="https://github.com/nidheekamble/barclays19/blob/master/whatIsPWA.PNG"> 
+Image source: https://codeburst.io/all-you-need-to-know-about-progressive-web-app-4ba73368da66 <hr>
+
 SETUP
 -----
 
@@ -67,7 +70,7 @@ EXTENSION
  MAINTAINERS
  -----------
 
-This project has been developed in the final round of *Barclays India Hackathon 2019*, at Pune, India in the time period of one day.
+This project has been developed in the final round of *Barclays India Hackathon 2019*, at Pune, India in the time period of fifteen hours.
 The contributors to the project and this repository are :
 
 Mr. Ameya Daddikar (`AmeyaDaddikar`)<br>
