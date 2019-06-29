@@ -20,7 +20,7 @@ class ResultView extends React.Component {
   investmentRecommendation() {
     let values = this.props.points[1]
 
-    let currVal = values[0]
+    let currVal = values[values.length - 1]
 
     const max = Math.max(...values)
     const min = Math.min(...values)
