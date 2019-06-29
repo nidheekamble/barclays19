@@ -79,7 +79,14 @@ class Search extends React.Component {
         <br />
         <Container>
           <InputGroup>
-            <Input type='text' placeholder='Search for stocks' onInput={e => this.onInput(e.target.value)} style={{width:'90vw', maxWidth: '700px'}} />
+            <Input list="searches" type='text' placeholder='Search for stocks from the suggestions' onInput={e => this.onInput(e.target.value)} style={{width:'90vw', maxWidth: '700px'}} />
+            <datalist id="searches">
+              <option value="BAJAJ" />
+              <option value="HDFC" />
+              <option value="ICICI" />
+              <option value="TCS" />
+              <option value="INFY" />
+            </datalist>
             <InputGroupAddon addonType="append">
               <Button color="secondary" onClick={e => this.onSubmitSearch() } >Search</Button>
             </InputGroupAddon>

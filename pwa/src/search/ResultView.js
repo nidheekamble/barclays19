@@ -26,16 +26,16 @@ class ResultView extends React.Component {
     const min = Math.min(...values)
     const avg = values.reduce( ( p, c ) => p + c, 0 ) / values.length;
 
-    if (currVal > avg)
+    if (currVal > avg && currVal < max)
       return {
-        color: 'success',
-        msg: 'Buy'
+        color: 'secondary',
+        msg: 'Hold'
       }
 
-    if (currVal <= avg)
+    if (currVal >= avg && currVal > max)
       return {
-        color: 'primary',
-        msg: 'Buy'
+        color: 'danger',
+        msg: 'Sell'
       }
 
     return {
