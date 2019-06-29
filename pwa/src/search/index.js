@@ -29,7 +29,7 @@ class Search extends React.Component {
     console.log(x.map(inp => inp.split(',')))
     let y = x.map(inp => inp.split(',').map(t => t.trim()))
 
-    return [y.map(i => i[0]), y.map(i => parseFloat(i[1])) ]
+    return [y.map(i => i[0]).reverse(), y.map(i => parseFloat(i[1])).reverse() ]
   }
 
   getDataPoints(stockName) {

@@ -6,3 +6,4 @@ dist/*
 !dist/sw.js
 !dist/icon_192.png
 !dist/icon_512.png
+!dist/favicon.ico
