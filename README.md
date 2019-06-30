@@ -18,6 +18,9 @@ INTRODUCTION
 <img src="https://github.com/nidheekamble/barclays19/blob/master/whatIsPWA.PNG"> 
 Image source: https://codeburst.io/all-you-need-to-know-about-progressive-web-app-4ba73368da66 <hr>
 
+### DEMO
+<img src="https://github.com/nidheekamble/stockWatch/blob/master/demo.gif" width=1000> <hr>
+
 SETUP
 -----
 
